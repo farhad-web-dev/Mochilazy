@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mochi-Care | Habit Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fff6f8;
+            --card-bg: #ffffff;
+            --primary-pink: #ff8fab;
+            --light-pink: #ffb3c6;
+            --pale-pink: #ffe5ec;
+            --text-dark: #4a4044;
+            --text-light: #8c7b82;
+            --border-color: #ffccd5;
+            --shadow: 0 8px 24px rgba(255, 143, 171, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--pale-pink);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .app-title h1 {
+            font-size: 24px;
+            color: var(--primary-pink);
+            font-weight: 700;
+        }
+
+        .app-title p {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats Bar */
+        .stats-banner {
+            background: var(--pale-pink);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Mochi Card */
+        .mochi-card {
+            background: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .mochi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .mochi-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .mochi-progress-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-pink);
+        }
+
+        .mochi-avatar-container {
+            font-size: 60px;
+            margin: 10px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .mochi-status-message {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        /* Meters */
+        .meter-group {
+            text-align: left;
+            margin-bottom: 12px;
+        }
+
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .meter-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--pale-pink);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: var(--primary-pink);
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        .feed-btn {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 10px 20px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(255, 143, 171, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .feed-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Tasks Section */
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .tasks-title h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .tasks-title p {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .add-btn {
+            background: var(--pale-pink);
+            color: var(--primary-pink);
+            border: none;
+            border-radius: 12px;
+            padding: 6px 14px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .task-list {
+            list-style: none;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .task-item {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+
+        .task-item.completed {
+            background: var(--bg-color);
+            border-color: var(--light-pink);
+            opacity: 0.7;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-pink);
+            cursor: pointer;
+        }
+
+        .task-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .task-item.completed .task-text h4 {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        .task-text span {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-pink);
+            text-transform: uppercase;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            color: #ff6b6b;
+        }
+
+        /* Footer Banner */
+        .shop-banner {
+            background: var(--pale-pink);
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .shop-icon {
+            font-size: 24px;
+        }
+
+        .shop-text h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .shop-text p {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Modal for adding task */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin: 12px 0;
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .save-btn { background: var(--primary-pink); color: white; }
+        .cancel-btn { background: #eee; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="app-title">
+                <h1>Mochi 🌸</h1>
+                <p>TINY WINS, BIG PURRS</p>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-banner">
+            <div class="stat-item">
+                <h3 id="streak-count">0</h3>
+                <p>DAY STREAK</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="coin-count">0</h3>
+                <p>FISH COINS</p>
+            </div>
+        </div>
+
+        <!-- Mochi Status Card -->
+        <div class="mochi-card">
+            <div class="mochi-header">
+                <span class="mochi-title">Mochi's Corner</span>
+                <span class="mochi-progress-text" id="progress-percent">0% complete</span>
+            </div>
+            <div class="mochi-avatar-container" id="mochi-avatar">💤</div>
+            <div class="mochi-status-message" id="mochi-message">"Yawwn... wake me with a little progress!"</div>
+            
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>Happiness</span>
+                    <span id="happiness-val">42%</span>
+                </div>
+                <div class="meter-bar">
+                    <div class="meter-fill" id="happiness-bar" style="width: 42%;"></div>
+                </div>
+            </div>
+
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>Fullness</span>
+                    <span id="fullness-val">68%</span>
+                </div>
+                <div class="meter-bar">
+                    <div class="meter-fill" id="fullness-bar" style="width: 68%;"></div>
+                </div>
+            </div>
+
+            <button class="feed-btn" onclick="feedMochi()">🐟 Feed Mochi (10 🪙)</button>
+        </div>
+
+        <!-- Tasks Section -->
+        <div class="tasks-header">
+            <div class="tasks-title">
+                <h2>Your Habits</h2>
+                <p id="task-counter">0 / 0 completed</p>
+            </div>
+            <button class="add-btn" onclick="openModal()">+ Add</button>
+        </div>
+
+        <ul class="task-list" id="task-list">
+            <!-- Dynamic tasks will go here -->
+        </ul>
+
+        <!-- Shop Banner -->
+        <div class="shop-banner">
+            <div class="shop-icon">🐟</div>
+            <div class="shop-text">
+                <h4>Fish Coins are Mochi's love language</h4>
+                <p>Complete a habit, spend your coins on treats.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="task-modal">
+        <div class="modal-content">
+            <h3>Add New Habit</h3>
+            <input type="text" id="new-task-input" placeholder="e.g., Drink 2L water">
+            <input type="text" id="new-category-input" placeholder="Category (e.g., Health)">
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="save-btn" onclick="addTask()">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('mochi_tasks')) || [
+            { id: 1, text: "Drink 2L water", category: "HEALTH", completed: false },
+            { id: 2, text: "Study for 45 mins", category: "MIND", completed: false },
+            { id: 3, text: "Take a 30 min walk", category: "FITNESS", completed: false }
+        ];
+
+        let coins = parseInt(localStorage.getItem('mochi_coins')) || 0;
+        let streak = parseInt(localStorage.getItem('mochi_streak')) || 0;
+        let happiness = parseInt(localStorage.getItem('mochi_happiness')) || 50;
+        let fullness = parseInt(localStorage.getItem('mochi_fullness')) || 60;
+
+        function updateUI() {
+            const taskListEl = document.getElementById('task-list');
+            taskListEl.innerHTML = '';
+
+            let completedCount = 0;
+
+            tasks.forEach((task, index) => {
+                if (task.completed) completedCount++;
+
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <div class="task-info">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask(${index})">
+                        <div class="task-text">
+                            <h4>${task.text}</h4>
+                            <span>${task.category} +10 coins</span>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteTask(${index})">🗑️</button>
+                `;
+                taskListEl.appendChild(li);
+            });
+
+            const percent = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
+            
+            document.getElementById('task-counter').innerText = `${completedCount} / ${tasks.length} completed`;
+            document.getElementById('progress-percent').innerText = `${percent}% complete`;
+            document.getElementById('coin-count').innerText = coins;
+            document.getElementById('streak-count').innerText = streak;
+
+            document.getElementById('happiness-val').innerText = `${happiness}%`;
+            document.getElementById('happiness-bar').style.width = `${happiness}%`;
+            document.getElementById('fullness-val').innerText = `${fullness}%`;
+            document.getElementById('fullness-bar').style.width = `${fullness}%`;
+
+            const avatar = document.getElementById('mochi-avatar');
+            const message = document.getElementById('mochi-message');
+
+            if (percent === 100 && tasks.length > 0) {
+                avatar.innerText = '🥳';
+                message.innerText = '"Yay! Mochi is super happy and full!"';
+            } else if (percent > 0) {
+                avatar.innerText = '😺';
+                message.innerText = '"Keep going! Mochi loves your progress!"';
+            } else {
+                avatar.innerText = '💤';
+                message.innerText = '"Yawwn... wake me with a little progress!"';
+            }
+
+            localStorage.setItem('mochi_tasks', JSON.stringify(tasks));
+            localStorage.setItem('mochi_coins', coins);
+            localStorage.setItem('mochi_streak', streak);
+            localStorage.setItem('mochi_happiness', happiness);
+            localStorage.setItem('mochi_fullness', fullness);
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            if (tasks[index].completed) {
+                coins += 10;
+                happiness = Math.min(100, happiness + 15);
+                if (streak === 0) streak = 1;
+            } else {
+                coins = Math.max(0, coins - 10);
+                happiness = Math.max(0, happiness - 15);
+            }
+            updateUI();
+        }
+
+        function feedMochi() {
+            if (coins >= 10) {
+                coins -= 10;
+                fullness = Math.min(100, fullness + 20);
+                happiness = Math.min(100, happiness + 10);
+                alert("🐟 Mochi happily ate the treat and purred!");
+                updateUI();
+            } else {
+                alert("Not enough Fish Coins! Complete more tasks first.");
+            }
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            updateUI();
+        }
+
+        function openModal() {
+            document.getElementById('task-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('task-modal').style.display = 'none';
+        }
+
+        function addTask() {
+            const text = document.getElementById('new-task-input').value.trim();
+            const category = document.getElementById('new-category-input').value.trim() || "GENERAL";
+            if(text) {
+                tasks.push({ id: Date.now(), text, category, completed: false });
+                document.getElementById('new-task-input').value = '';
+                document.getElementById('new-category-input').value = '';
+                closeModal();
+                updateUI();
+            }
+        }
+
+        // Initial load
+        updateUI();
+    </script>
+</body>
+</html>
+  
